@@ -49,3 +49,21 @@ These come from one run on 2026-09-27 (Python 3.12, sentence-transformers 6.1.0,
 | Same sentence embedded by MiniLM vs by BGE (different spaces) | 0.366 |
 
 Model facts: MiniLM 384 dims, 256-token limit, ~22.7M parameters, mean pooling + normalisation built in; BGE-small 384 dims, 512-token limit, ~33.4M parameters. RB-01 = 1,193 MiniLM tokens. Embedding the same sentence twice gave identical vectors.
+
+**Notebook values quoted in the slides, guide, solutions and cheat sheet** (all-MiniLM-L6-v2 unless stated)
+
+| Where | Values |
+|---|---|
+| NB1 billing set vs "My customer was charged twice." | paid two times 0.558 · card declined 0.386 · Kafka consumer 0.230 |
+| NB1 how-to set vs "How do I reverse a duplicate transaction?" | refund someone who paid twice 0.541 · roll back deployment 0.303 · rate limit 0.104 |
+| NB1 "key" context set | idempotency key ↔ Idempotency-Key header 0.717 · ↔ API key 0.354 · API key ↔ HTTP 429 0.480 |
+| NB1 surprise pairs | deployment succeeded/failed 0.844 · payment succeeded/failed 0.794 |
+| NB1 printed vectors | "My customer was charged twice." starts −0.004, 0.021, 0.015, 0.013, −0.013, −0.049, 0.033, −0.061, 0.061, −0.011 · "I bought a new laptop." (guide) starts −0.019, 0.002, 0.024, −0.043, 0.083, −0.067, 0.007, 0.007 |
+| NB1 2D cosine examples | 1.000 · 0.960 · 0.000 · −1.000 (exact) |
+| NB2 E4–E6 | HTTPS query: KB-019 0.465 after E4 (KB-002 0.273 before) · sluggish → KB-009 0.489 · undo release → KB-015 0.388 · Retry-After semantic top KB-017 0.452 · ledger-consumers semantic top KB-003 0.495 · max.poll.records semantic KB-010 0.205 (KB-007 0.099) · ERR_DB_POOL_TIMEOUT → KB-012 0.542 · DUPLICATE_DEBIT → KB-001 0.614 · TXN-5582-1147 → KB-017 0.212 |
+| NB2 canonical (project question) | "My customer was charged twice…": KB-017 0.464 · KB-001 0.403 · KB-003 0.401 |
+| NB3 cross-model, same sentence | 0.366 · 0.333 · 0.318 |
+| NB4 | whole RB-01 ≈ its first 150 words 0.993 · refund question: whole doc 0.256 vs best chunk 0.549 (RB-01::chunk-06) · Kafka 0.643 (RB-02::chunk-05) · rollback 0.577 / 0.490 · receipts: RB-01::chunk-03 0.461, RB-02::chunk-00 0.421 (rank 2), RB-06::chunk-00 0.396 (rank 5) · partial question RB-01::chunk-07 0.557, chunk-06 0.526 |
+| NB4 chunk-size experiment (pair lab) | top scores at 60/10: 0.652, 0.744, 0.490, 0.590, 0.600 · at 240/40: 0.577, 0.529, 0.437, 0.461, 0.620 · rephrasing: "undo last release" 0.346, "revert deploy" 0.485, "The new version is broken, go back" 0.295 |
+| NB5 | Wi-Fi question retrieval 0.138 / 0.131 / 0.129 · Friday afternoon best 0.283 |
+| GloVe (full vocabulary) | rome − italy + spain → madrid 0.704, seville 0.656, paris 0.655 · tokyo − japan + china → beijing 0.832 · runners-up monarch 0.684, throne 0.676, frankfurt 0.799, vienna 0.768 |
