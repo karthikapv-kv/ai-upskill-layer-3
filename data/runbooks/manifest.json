@@ -1,0 +1,38 @@
+[
+  {
+    "document_id": "RB-01",
+    "title": "Duplicate Payments & Transaction Reversal Runbook",
+    "category": "payments",
+    "file": "RB-01-duplicate-payments.md"
+  },
+  {
+    "document_id": "RB-02",
+    "title": "Kafka Consumer Operations Runbook",
+    "category": "kafka",
+    "file": "RB-02-kafka-consumer-operations.md"
+  },
+  {
+    "document_id": "RB-03",
+    "title": "API Latency Troubleshooting Runbook",
+    "category": "api",
+    "file": "RB-03-api-latency.md"
+  },
+  {
+    "document_id": "RB-04",
+    "title": "Database Connection Pool Runbook",
+    "category": "database",
+    "file": "RB-04-database-connection-pool.md"
+  },
+  {
+    "document_id": "RB-05",
+    "title": "Deployment & Rollback Runbook",
+    "category": "deployment",
+    "file": "RB-05-deployment-and-rollback.md"
+  },
+  {
+    "document_id": "RB-06",
+    "title": "Production Incident Response Handbook",
+    "category": "incident",
+    "file": "RB-06-incident-response.md"
+  }
+]

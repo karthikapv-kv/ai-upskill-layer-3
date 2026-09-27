@@ -1,0 +1,50 @@
+[
+  {
+    "question": "How do I investigate a duplicate payment?",
+    "case": "answerable",
+    "expected_sources": ["RB-01"],
+    "notes": "Canonical Case 1. RB-01 covers confirming the duplicate, checking whether it is still happening, stopping it and reversing it. Expect a grounded answer citing RB-01 chunks."
+  },
+  {
+    "question": "How long does a duplicate-charge refund take, and who must approve refunds above $10,000?",
+    "case": "partial",
+    "expected_sources": ["RB-01"],
+    "notes": "Canonical Case 2. RB-01 gives the refund timeline (5 to 7 business days for cards, 1 to 2 for wallets) but no document mentions approval rules for large refunds. A good answer gives the timeline and says the approval rules are not in the documentation. Watch for the model inventing an approver."
+  },
+  {
+    "question": "How do I configure Kubernetes autoscaling?",
+    "case": "unanswerable",
+    "expected_sources": [],
+    "notes": "Canonical Case 3. Nothing in the knowledge base mentions Kubernetes or autoscaling. Retrieval still returns top-k chunks (with low similarity scores); the expected answer is the NO_ANSWER_TEXT sentence."
+  },
+  {
+    "question": "Our Kafka consumer stopped processing messages.",
+    "case": "answerable",
+    "expected_sources": ["RB-02"],
+    "notes": "Project question. RB-02 has a first-checks list, rebalancing loops and poison messages."
+  },
+  {
+    "question": "Why has our API suddenly become very slow?",
+    "case": "answerable",
+    "expected_sources": ["RB-03"],
+    "notes": "Project question. RB-03 covers p95/p99, all-endpoints vs one-endpoint, traces and recent changes."
+  },
+  {
+    "question": "How do I roll back a failed deployment?",
+    "case": "answerable",
+    "expected_sources": ["RB-05"],
+    "notes": "Project question. RB-05 has the acmectl rollback steps and the database migration caveat."
+  },
+  {
+    "question": "Why are customers not receiving payment receipts?",
+    "case": "partial",
+    "expected_sources": ["RB-02"],
+    "notes": "Unexpected-retrieval case (Exercise 10). The only relevant fact is one sentence in the RB-02 overview (notification-consumers send receipts). Retrieval ranks RB-01 (duplicate payments) first because the question shares its topic words, not its intent."
+  },
+  {
+    "question": "Can I deploy on Friday afternoon?",
+    "case": "answerable",
+    "expected_sources": ["RB-05"],
+    "notes": "Low-similarity but answerable: RB-05 says not after 15:00 on a Friday for payment-service or ledger-service. The wording mismatch ('afternoon' vs '15:00') gives low similarity scores, so a strict similarity threshold would wrongly reject it."
+  }
+]

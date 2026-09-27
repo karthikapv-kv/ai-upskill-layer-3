@@ -1,0 +1,62 @@
+[
+  {
+    "query": "How do I undo an extra debit on a customer's account?",
+    "expected_document_id": "KB-001"
+  },
+  {
+    "query": "What header stops a retried request from creating a second transaction?",
+    "expected_document_id": "KB-003"
+  },
+  {
+    "query": "Why did the customer's bank refuse their card?",
+    "expected_document_id": "KB-004"
+  },
+  {
+    "query": "What states does a refund go through?",
+    "expected_document_id": "KB-005"
+  },
+  {
+    "query": "Messages are piling up faster than our consumers can handle them",
+    "expected_document_id": "KB-006"
+  },
+  {
+    "query": "Our consumers keep leaving and rejoining the group",
+    "expected_document_id": "KB-007"
+  },
+  {
+    "query": "One malformed event is blocking the whole partition",
+    "expected_document_id": "KB-008"
+  },
+  {
+    "query": "Checkout responses have become sluggish for all users",
+    "expected_document_id": "KB-009"
+  },
+  {
+    "query": "A client keeps being told it is sending too many requests",
+    "expected_document_id": "KB-010"
+  },
+  {
+    "query": "Requests fail because no free database connections are available",
+    "expected_document_id": "KB-012"
+  },
+  {
+    "query": "What are the steps to ship a new version to production?",
+    "expected_document_id": "KB-014"
+  },
+  {
+    "query": "The release broke things, how do I go back to the previous version?",
+    "expected_document_id": "KB-015"
+  },
+  {
+    "query": "What caused the outage where shoppers were billed several times?",
+    "expected_document_id": "KB-017"
+  },
+  {
+    "query": "Where do messages end up after failing three times?",
+    "expected_document_id": "KB-008"
+  },
+  {
+    "query": "A report query starved the checkout service of connections during a sale",
+    "expected_document_id": "KB-018"
+  }
+]

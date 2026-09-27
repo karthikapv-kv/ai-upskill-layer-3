@@ -1,0 +1,110 @@
+[
+  {
+    "document_id": "KB-001",
+    "title": "Procedure for reversing duplicate debit transactions",
+    "category": "payments",
+    "content": "Use this procedure when a customer has been debited more than once for the same order. Confirm the duplicate by matching order_id, amount and card fingerprint within a 10-minute window in the ledger_entries table. Only reverse the later debit and keep the original. Call POST /ledger/reversals with the transaction ID of the later debit and the reason code DUPLICATE_DEBIT. Never delete ledger rows by hand. The refund-worker then returns the funds to the customer's card, which usually takes 5 to 7 business days. Add the reversal ID to the support ticket so the customer can be told what happened."
+  },
+  {
+    "document_id": "KB-002",
+    "title": "Investigating payment gateway timeouts",
+    "category": "payments",
+    "content": "payment-service calls the external card processor with a 10-second timeout. When the processor does not respond in time, payment-service returns HTTP 504 to checkout-api and marks the attempt PENDING_UNKNOWN. Do not retry blindly: the processor may already have completed the authorisation. First check the processor status page and the timeout rate on the payment-service dashboard. Then call the processor lookup endpoint with the attempt reference to learn the real outcome. Attempts that stay in PENDING_UNKNOWN for more than 15 minutes are settled automatically by the hourly reconciliation job."
+  },
+  {
+    "document_id": "KB-003",
+    "title": "Using idempotency keys for payment requests",
+    "category": "payments",
+    "content": "Every request from checkout-api to payment-service must include an Idempotency-Key header. The key is generated once per checkout attempt and reused on every retry of that attempt. payment-service stores the key together with the result for 24 hours, so a repeated request with the same key returns the stored result instead of creating a new transaction. If the same key arrives with a different amount, ledger-service rejects the posting with error ERR_LEDGER_409. Missing or regenerated keys are the most common root cause of customers being billed more than once for one order."
+  },
+  {
+    "document_id": "KB-004",
+    "title": "Handling declined card authorisations",
+    "category": "payments",
+    "content": "A decline means the card issuer refused the authorisation; it is not a system failure. payment-service maps issuer response codes to our reason codes: INSUFFICIENT_FUNDS, CARD_EXPIRED, SUSPECTED_FRAUD and DO_NOT_HONOUR. Show the customer a generic message and never reveal fraud reasons. A sudden rise in declines across many issuers usually points to a problem on our side, such as malformed authorisation requests after a deployment, rather than a change in customer behaviour. Compare the decline rate with the time of the last release before escalating to the payments team."
+  },
+  {
+    "document_id": "KB-005",
+    "title": "Refund processing workflow",
+    "category": "payments",
+    "content": "Refunds are created through POST /refunds on payment-service and processed asynchronously by the refund-worker, which reads refund requests from the payment-events topic. Each refund moves through the states CREATED, SUBMITTED, COMPLETED or FAILED. Partial refunds are allowed up to the original amount. Funds normally reach a card in 5 to 7 business days and a digital wallet in 1 to 2 business days. If a refund stays in SUBMITTED for more than 48 hours, check the refund-worker logs and the processor response before submitting it again."
+  },
+  {
+    "document_id": "KB-006",
+    "title": "Troubleshooting Kafka consumer lag",
+    "category": "kafka",
+    "content": "Consumer lag is the number of messages written to a topic but not yet processed by a consumer group. Growing lag on the ledger-consumers group means ledger entries are being recorded late. Check the lag dashboard per partition. Lag on a single partition suggests one stuck consumer or one slow message. Lag on all partitions suggests the consumers are too slow or not running at all. Common fixes are restarting a stuck instance, adding consumer instances up to the partition count (12 for payment-events), and removing slow downstream calls from the processing loop."
+  },
+  {
+    "document_id": "KB-007",
+    "title": "Kafka consumer group rebalancing loops",
+    "category": "kafka",
+    "content": "If a consumer takes longer than max.poll.interval.ms (300000 ms in our configuration) to process a batch, the broker assumes it has died and starts a rebalance. No messages are processed during a rebalance, so repeated rebalances make it look as if the consumer has stopped. Typical symptoms are logs that repeatedly show 'Revoking partitions' and 'Joining group' while lag keeps climbing. Fix it by lowering max.poll.records, speeding up processing, or raising max.poll.interval.ms. Also check for instances restarting in a crash loop, which produces the same pattern."
+  },
+  {
+    "document_id": "KB-008",
+    "title": "Handling poison messages with a dead-letter topic",
+    "category": "kafka",
+    "content": "A poison message is a message that fails every time it is processed, for example because of invalid JSON or a missing field. Without protection, the consumer retries it forever and every message behind it on that partition stops moving. Our consumers retry three times with backoff, then publish the failing message to a dead-letter topic named after the source topic, such as payment-events.DLT, and continue. Inspect dead-letter messages with acmectl kafka dlt-inspect, fix the cause, then replay them with acmectl kafka dlt-replay."
+  },
+  {
+    "document_id": "KB-009",
+    "title": "Diagnosing high API latency",
+    "category": "api",
+    "content": "Start with the p95 and p99 latency charts for checkout-api rather than the average, because averages hide slow requests. Check whether latency rose for every endpoint or only for one. Every endpoint slowing down at once points to a shared dependency such as the database, the connection pool, CPU saturation or a slow downstream service. A single slow endpoint points to its own code or queries. Use distributed traces to find the span that grew. Compare the start of the slowdown with recent deployments and configuration changes, and check whether traffic volume changed."
+  },
+  {
+    "document_id": "KB-010",
+    "title": "Rate limiting and HTTP 429 responses",
+    "category": "api",
+    "content": "The edge-gateway limits each client API key to 100 requests per second, configured with ratelimit.requests_per_second. Requests over the limit receive HTTP 429 Too Many Requests with a Retry-After header, and clients should wait for that delay before retrying. A spike in 429 responses from one key usually means a client bug such as a tight retry loop. A spike across all keys may mean the limit was lowered by a configuration change. Temporary limit increases must be requested from the API platform team."
+  },
+  {
+    "document_id": "KB-011",
+    "title": "Troubleshooting 502/504 errors from the API gateway",
+    "category": "api",
+    "content": "The edge-gateway returns 502 Bad Gateway when the upstream service closes the connection or sends an invalid response, and 504 Gateway Timeout when the upstream does not answer within 30 seconds. A burst of 502 errors right after a release usually means instances were stopped before they finished draining their open connections. Persistent 504 errors mean the upstream is too slow, so follow the API latency guide. Check the upstream_status field in the gateway access logs to see which service failed."
+  },
+  {
+    "document_id": "KB-012",
+    "title": "Database connection pool exhaustion",
+    "category": "database",
+    "content": "Each service instance keeps a fixed pool of PostgreSQL connections, sized by db.pool.max_size (default 20). When every connection is busy, new requests wait up to db.pool.acquire_timeout_ms (2000 ms) and then fail with ERR_DB_POOL_TIMEOUT. The usual symptoms are rising latency across all endpoints followed by timeouts. Causes include slow queries holding connections, transactions left open, connection leaks in error paths, and running more instances than payments-db max_connections can support. Raising the pool size is rarely the right first fix; find out what is holding the connections."
+  },
+  {
+    "document_id": "KB-013",
+    "title": "Slow queries and missing indexes",
+    "category": "database",
+    "content": "Enable the slow query log on payments-db for statements that take longer than 500 ms and review the worst offenders every week. Run EXPLAIN ANALYZE on a slow statement: a sequential scan on a large table usually means an index is missing. Common culprits are lookups on ledger_entries by order_id and on refunds by status. Create indexes concurrently in production so the table is not locked. Every index slows down writes, so only add indexes that match real query patterns."
+  },
+  {
+    "document_id": "KB-014",
+    "title": "Standard production deployment procedure",
+    "category": "deployment",
+    "content": "All production deployments use acmectl deploy <service> --version <version>. A release first goes to a canary group of 5% of instances for 15 minutes while its error rate and p99 latency are compared with the previous version. If the canary is healthy, the rollout continues automatically in batches of 25%. Every deployment needs a green CI pipeline and an approved change ticket. Avoid deploying payment-service or ledger-service after 15:00 on Fridays or during a release freeze."
+  },
+  {
+    "document_id": "KB-015",
+    "title": "Rolling back a failed deployment",
+    "category": "deployment",
+    "content": "If a release causes errors, roll back first and investigate afterwards. Run acmectl rollback <service> --to <previous-version>; acmectl history <service> shows which version was running before. A rollback redeploys the old version to all instances within about five minutes and skips the canary stage. Database migrations are not rolled back automatically: if the release included a migration, confirm that the old version is compatible with the new schema before rolling back, or switch the feature off with its flag instead. Record the rollback in the incident channel."
+  },
+  {
+    "document_id": "KB-016",
+    "title": "Using feature flags for safe releases",
+    "category": "deployment",
+    "content": "New behaviour in payment-service and checkout-api should ship behind a feature flag so it can be switched off without a deployment. Flags are managed with acmectl flags set <flag-name> --percent <n>. Start with internal users, then move to 1%, 10%, 50% and 100%, watching error rates at each step. Switching a flag off takes effect within 30 seconds. Remove flags within 30 days of reaching 100% to avoid leaving dead code paths behind."
+  },
+  {
+    "document_id": "KB-017",
+    "title": "Incident INC-2291: duplicate charges after a retry storm",
+    "category": "incident",
+    "content": "Summary of incident INC-2291. A network slowdown between checkout-api and payment-service caused client timeouts. checkout-api retried each timed-out request, but a bug generated a new idempotency key for every retry, so payment-service treated each retry as a new transaction. About 1,800 customers were charged two or three times over 40 minutes, including transaction TXN-5582-1147. Mitigation: retries were disabled with a feature flag and the extra debits were reversed using the duplicate debit procedure. Follow-up actions: reuse idempotency keys across retries and alert on duplicate ledger entries."
+  },
+  {
+    "document_id": "KB-018",
+    "title": "Incident INC-2307: checkout latency spike from pool exhaustion",
+    "category": "incident",
+    "content": "Summary of incident INC-2307. checkout-api p99 latency rose from 300 ms to 9 seconds during a sales campaign. A new reporting query held database connections for several seconds each, exhausting the connection pool on every checkout-api instance. Requests waited for a free connection and then failed with ERR_DB_POOL_TIMEOUT. Mitigation: the reporting job was stopped and checkout-api was restarted. Follow-up actions: move reporting to a read replica, add an index on ledger_entries.order_id, and alert when pool usage stays above 80%."
+  }
+]
