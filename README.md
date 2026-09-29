@@ -4,7 +4,7 @@ Build the **Acme Pay Internal Engineering Knowledge Assistant**: search a fictio
 
 > Search by words → words don't capture meaning → embeddings → cosine similarity → semantic search → retrieve knowledge → give it to an LLM → RAG
 
-Everything runs in **Google Colab**, for free: no installs, accounts or API keys beyond a Google account.
+Everything runs in **Google Colab**, for free: no installs. Notebook 5 uses a free [Groq](https://console.groq.com/keys) API key by default, or a local model if you don't have one.
 
 ## Notebooks
 
@@ -14,13 +14,13 @@ Everything runs in **Google Colab**, for free: no installs, accounts or API keys
 | 2 | Build Semantic Search | Keyword vs semantic search, and the idea of hybrid search | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/karthikapv-kv/ai-upskill-layer-3/blob/main/notebooks/02_semantic_search.ipynb) |
 | 3 | Choosing an Embedding Model | Compare two models on Acme questions | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/karthikapv-kv/ai-upskill-layer-3/blob/main/notebooks/03_embedding_model_comparison.ipynb) |
 | 4 | Basic RAG Retrieval | Document ingestion → chunking → embedding → indexing → retrieval | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/karthikapv-kv/ai-upskill-layer-3/blob/main/notebooks/04_basic_rag_retrieval.ipynb) |
-| 5 | The Acme Knowledge Assistant | Augmentation → generation: answers with sources, and where RAG fails · **use a T4 GPU** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/karthikapv-kv/ai-upskill-layer-3/blob/main/notebooks/05_complete_rag_assistant.ipynb) |
+| 5 | The Acme Knowledge Assistant | Augmentation → generation: answers with sources, and where RAG fails · **Groq key or T4 GPU** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/karthikapv-kv/ai-upskill-layer-3/blob/main/notebooks/05_complete_rag_assistant.ipynb) |
 
 Each notebook runs on its own, top to bottom. Exercises marked ⏱️ are done in the session and 🏠 are take-home; solutions are in click-to-reveal cells at the end of each notebook.
 
 ## Before the session
 
-Follow **[docs/participant_setup.md](docs/participant_setup.md)** (about 10 minutes): open each notebook and run its setup cells, and check Notebook 5 on a free **T4 GPU** (*Runtime → Change runtime type → T4 GPU*).
+Follow **[docs/participant_setup.md](docs/participant_setup.md)** (about 10 minutes): open each notebook and run its setup cells, and check Notebook 5 with your free Groq key (or on a free **T4 GPU** without one).
 
 ## Reference
 
@@ -47,6 +47,7 @@ Acme Pay, its services, people and incidents are all fictional.
 |---|---|---|
 | Embeddings | `sentence-transformers/all-MiniLM-L6-v2` | Apache-2.0 |
 | Comparison model | `BAAI/bge-small-en-v1.5` | MIT |
-| LLM (runs inside Colab) | `Qwen/Qwen3-1.7B` (fallback `Qwen/Qwen2.5-0.5B-Instruct`) | Apache-2.0 |
+| LLM (default, free API key) | `openai/gpt-oss-20b` on [Groq](https://console.groq.com) (key in Colab 🔑 Secrets as `GROQ_API_KEY`) | Apache-2.0 |
+| LLM (no key: runs inside Colab) | `Qwen/Qwen3-1.7B` (fallback `Qwen/Qwen2.5-0.5B-Instruct`) | Apache-2.0 |
 | Vector database | ChromaDB (in memory) | Apache-2.0 |
 | Chat UI (optional) | Gradio | Apache-2.0 |

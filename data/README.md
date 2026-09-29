@@ -60,7 +60,7 @@ Model facts: MiniLM 384 dims, 256-token limit, ~22.7M parameters, mean pooling +
 | NB1 surprise pairs | deployment succeeded/failed 0.844 · payment succeeded/failed 0.794 |
 | NB1 printed vectors | "My customer was charged twice." starts −0.004, 0.021, 0.015, 0.013, −0.013, −0.049, 0.033, −0.061, 0.061, −0.011 · "I bought a new laptop." (guide) starts −0.019, 0.002, 0.024, −0.043, 0.083, −0.067, 0.007, 0.007 |
 | NB1 2D cosine examples | 1.000 · 0.960 · 0.000 · −1.000 (exact) |
-| NB2 E4–E6 | HTTPS query: KB-019 0.465 after E4 (KB-002 0.273 before) · sluggish → KB-009 0.489 · undo release → KB-015 0.388 · Retry-After semantic top KB-017 0.452 · ledger-consumers semantic top KB-003 0.495 · max.poll.records semantic KB-010 0.205 (KB-007 0.099) · ERR_DB_POOL_TIMEOUT → KB-012 0.542 · DUPLICATE_DEBIT → KB-001 0.614 · TXN-5582-1147 → KB-017 0.212 |
+| NB2 E2.1–E2.3 | HTTPS query: KB-019 0.465 after E2.3 (KB-002 0.273 before) · sluggish → KB-009 0.489 · undo release → KB-015 0.388 · Retry-After semantic top KB-017 0.452 · ledger-consumers semantic top KB-003 0.495 · max.poll.records semantic KB-010 0.205 (KB-007 0.099) · ERR_DB_POOL_TIMEOUT → KB-012 0.542 · DUPLICATE_DEBIT → KB-001 0.614 · TXN-5582-1147 → KB-017 0.212 |
 | NB2 canonical (project question) | "My customer was charged twice…": KB-017 0.464 · KB-001 0.403 · KB-003 0.401 |
 | NB3 cross-model, same sentence | 0.366 · 0.333 · 0.318 |
 | NB4 | whole RB-01 ≈ its first 150 words 0.993 · refund question: whole doc 0.256 vs best chunk 0.549 (RB-01::chunk-06) · Kafka 0.643 (RB-02::chunk-05) · rollback 0.577 / 0.490 · receipts: RB-01::chunk-03 0.461, RB-02::chunk-00 0.421 (rank 2), RB-06::chunk-00 0.396 (rank 5) · partial question RB-01::chunk-07 0.557, chunk-06 0.526 |
